@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Local Farmers Registration System</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <img src="logo.png" alt="System Logo" class="logo" />
+      <div class="header-text">
+        <h1>Local Farmers Registration System</h1>
+        <p>Banayoyo, Ilocos Sur</p>
+      </div>
+      <button id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <h3>Filters</h3>
+      <div class="filter-row">
+        <label>Name:
+          <input type="text" id="searchInput" placeholder="Enter name..." />
+        </label>
+        <label>Registered Barangay:
+          <select id="filterBarangay">
+            <option value="">All</option>
+            <option value="Bagbagotot">Bagbagotot</option>
+            <option value="Banbanaal">Banbanaal</option>
+            <option value="Bisangol">Bisangol</option>
+            <option value="Cadanglaan">Cadanglaan</option>
+            <option value="Casilagan Norte">Casilagan Norte</option>
+            <option value="Casilagan Sur">Casilagan Sur</option>
+            <option value="Elefante">Elefante</option>
+            <option value="Guardia">Guardia</option>
+            <option value="Lintic">Lintic</option>
+            <option value="Lopez">Lopez</option>
+            <option value="Montero">Montero</option>
+            <option value="Naguimba">Naguimba</option>
+            <option value="Pila">Pila</option>
+            <option value="Poblacion">Poblacion</option>
+          </select>
+        </label>
+        <label>Crop/Livestock:
+          <select id="filterCrop">
+            <option value="">All</option>
+          </select>
+        </label>
+        <label>Season Type:
+          <select id="filterSeason">
+            <option value="">All</option>
+            <option value="Not Applicable">Not Applicable</option>
+            <option value="Dry/1st Crop">Dry/1st Crop</option>
+            <option value="Dry/2nd Crop">Dry/2nd Crop</option>
+            <option value="Wet/1st Crop">Wet/1st Crop</option>
+            <option value="Wet/2nd Crop">Wet/2nd Crop</option>
+          </select>
+        </label>
+        <label>From:
+          <input type="date" id="filterDateFrom" />
+        </label>
+        <label>To:
+          <input type="date" id="filterDateTo" />
+        </label>
+        <button id="clearFilter">Clear</button>
+      </div>
+    </div>
+
+    <!-- Print Report Button -->
+    <div class="print-report">
+      <button id="printReportBtn">Print Summary Report</button>
+    </div>
+
+    <!-- Add Farmer Button -->
+    <button id="addFarmerBtn" class="primary-btn">Add Farmer</button>
+
+    <!-- Farmer Table -->
+    <h2>Registered Farmers</h2>
+    <table id="farmerTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Registered Barangay</th>
+          <th>Farm Size/No. of Heads</th>
+          <th>Crop/Livestock Type</th>
+          <th>Season Type</th>
+          <th>Date of Registration</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <hr />
+
+    <!-- Backup & Restore -->
+    <div class="backup-section">
+      <h2>Backup & Restore</h2>
+      <button id="backupBtn">Download Backup (JSON)</button>
+      <input type="file" id="restoreInput" accept=".json" />
+      <button id="restoreBtn">Upload & Restore</button>
+    </div>
+
+    <!-- Add below "Backup & Restore" section -->
+<div class="danger-section">
+  <h2>⚠️ Administrative Actions</h2>
+  <button id="clearFarmersBtn" style="background-color:#d32f2f;color:white;padding:10px 14px;border:none;border-radius:4px;cursor:pointer;">
+    Clear All Registered Farmers Data
+  </button>
+  <button id="clearAuditBtn" style="background-color:#f57c00;color:white;padding:10px 14px;border:none;border-radius:4px;cursor:pointer;margin-left:10px;">
+    Clear All Audit Trail
+  </button>
+</div>
+
+    <hr />
+
+    <!-- Data Sharing -->
+    <div class="sharing-section">
+      <h2>Data Sharing</h2>
+      <button id="uploadDataBtn">Upload (Export All Farmers)</button>
+      <input type="file" id="downloadDataInput" accept=".fso" style="display:none;" />
+      <button id="downloadDataBtn">Download & Merge</button>
+    </div>
+
+    <hr />
+
+    <!-- Audit Trail (Admin Only) -->
+    <div id="auditSection" class="audit-section" style="display:none;">
+      <h2>Audit Trail</h2>
+      <button id="exportAuditBtn">Export Audit Log</button>
+      <table id="auditTable" class="entry-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Action</th>
+            <th>User</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- User Management (Admin Only) -->
+    <div id="userManagementSection" class="user-management-section" style="display:none;">
+      <h2>User Management</h2>
+      <button id="addUserBtn" class="primary-btn">Add User</button>
+      <table id="userTable" class="entry-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Modal: Add/Edit Farmer -->
+  <div id="farmerModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle">Add Farmer</h2>
+
+      <div class="modal-body">
+        <form id="farmerForm">
+          <input type="hidden" id="farmerId" />
+
+          <!-- Farmer ID + QR Code -->
+          <label>Farmer ID:
+            <input type="text" id="farmerID" readonly />
+            <div id="qrcode"></div>
+          </label>
+
+          <!-- Basic Info -->
+          <div class="form-grid">
+            <label>Full Name:
+              <input type="text" id="name" required />
+            </label>
+            <label>Registered Barangay:
+              <select id="registeredBarangay" required>
+                <option value="">-- Select --</option>
+                <option value="Bagbagotot">Bagbagotot</option>
+                <option value="Banbanaal">Banbanaal</option>
+                <option value="Bisangol">Bisangol</option>
+                <option value="Cadanglaan">Cadanglaan</option>
+                <option value="Casilagan Norte">Casilagan Norte</option>
+                <option value="Casilagan Sur">Casilagan Sur</option>
+                <option value="Elefante">Elefante</option>
+                <option value="Guardia">Guardia</option>
+                <option value="Lintic">Lintic</option>
+                <option value="Lopez">Lopez</option>
+                <option value="Montero">Montero</option>
+                <option value="Naguimba">Naguimba</option>
+                <option value="Pila">Pila</option>
+                <option value="Poblacion">Poblacion</option>
+              </select>
+            </label>
+            <label>Age:
+              <input type="number" id="age" required min="1" />
+            </label>
+            <label>Sex:
+              <select id="sex" required>
+                <option value="">-- Select --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </label>
+            <label>Cedula Number:
+              <input type="text" id="cedulaNumber" />
+            </label>
+          </div>
+
+          <!-- Farm Records -->
+          <h3>Farm Records</h3>
+          <table id="farmRecordsTable" class="entry-table">
+            <thead>
+              <tr>
+                <th>Barangay</th>
+                <th>Farm Size/No. of Heads</th>
+                <th>Crop/Livestock Type</th>
+                <th>Season Type</th>
+                <th>Date of Registration</th>
+                <th>Tax Clearance</th>
+                <th>RSBA Form</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="farmRecordsBody"></tbody>
+          </table>
+          <button type="button" id="addRowBtn" class="add-row-btn">Add Row</button>
+        </form>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" form="farmerForm">Save Farmer</button>
+        <button type="button" id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: View Farmer -->
+  <div id="viewModal" class="modal">
+    <div class="modal-content">
+      <span class="close-view">&times;</span>
+      <h2>Farmer Details</h2>
+
+      <div id="viewContent" class="view-grid">
+        <!-- Content loaded dynamically -->
+      </div>
+
+      <div class="form-actions">
+        <button id="printSlipBtn">Print Registration Slip</button>
+        <button type="button" class="close-view">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    Created by: Randolf D. Tejada / LDRRMA
+  </footer>
+
+  <!-- Scripts -->
+  <script src="qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Banayoyo Agriculture Office</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css" />
+<style>
+  /* Page Background */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.6;
+  }
+
+  /* Login Container */
+  .login-container {
+    width: 400px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    color: #333;
+  }
+
+  /* Header Section */
+  .login-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .login-logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 2px solid #ddd;
+    margin-bottom: 10px;
+  }
+
+  .login-title h2 {
+    font-size: 18px;
+    color: #2e7d32;
+    margin: 8px 0 4px;
+    font-weight: bold;
+  }
+
+  .login-title p {
+    font-size: 13px;
+    color: #555;
+    margin: 0;
+  }
+
+  /* Form Group */
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  /* Text Inputs - Username & Password */
+  .form-group input[type="text"],
+  .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    color: #333;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+
+  /* Hover Effect */
+  .form-group input:hover {
+    border-color: #2e7d32;
+    background-color: #f9fff9;
+  }
+
+  /* Focus Effect - Clean & Professional */
+  .form-group input:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    background-color: #f8fff8;
+    transform: translateY(-1px);
+    transition: all 0.2s ease-out;
+  }
+
+  /* Submit Button */
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+  }
+
+  .login-btn:hover {
+    background-color: #1b5e20;
+    transform: translateY(-1px);
+  }
+
+  .login-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Error Message */
+  .error {
+    color: #c62828;
+    font-size: 13px;
+    margin-top: 8px;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  /* Footer */
+  .app-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    margin-top: 25px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+  }
+</style>
+
+</head>
+<body>
+  <div class="login-container">
+    <!-- Header -->
+    <div class="login-header">
+      <img src="logo.png" alt="Municipal Logo" class="login-logo" />
+      <div class="login-title">
+        <h2>Local Farmers Registration System</h2>
+        <p>Banayoyo, Ilocos Sur</p>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Username:</label>
+        <input type="text" id="username" required />
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" id="password" required />
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+      <div id="errorMsg" class="error"></div>
+    </form>
+
+    <!-- Footer -->
+    <footer class="login-footer">
+      Created by: Randolf D. Tejada / LDRRMA
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="users.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!window.users || !Array.isArray(window.users)) {
+        alert('Failed to load user database.');
+        return;
+      }
+
+      const user = window.users.find(u => u.username === username && u.password === password);
+      if (!user) {
+        document.getElementById('errorMsg').textContent = 'Invalid credentials.';
+        return;
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify({
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        name: user.name
+      }));
+
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
